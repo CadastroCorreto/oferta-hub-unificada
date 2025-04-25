@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { MarketplaceCard } from "@/components/MarketplaceCard";
 import { useToast } from "@/components/ui/use-toast";
@@ -7,6 +6,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ExternalLink } from "lucide-react";
+import { connectMarketplace, disconnectMarketplace, getConnectedMarketplaces } from "@/services/marketplace";
+import type { MarketplaceConnection } from "@/types/marketplace";
 
 // Mock data for marketplaces
 const marketplaces = [
@@ -54,7 +55,26 @@ export function MarketplaceConnector() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isInfoDialogOpen, setIsInfoDialogOpen] = useState(false);
   const [credentials, setCredentials] = useState({ email: "", password: "" });
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    loadConnectedMarketplaces();
+  }, []);
+
+  const loadConnectedMarketplaces = async () => {
+    try {
+      const connections = await getConnectedMarketplaces();
+      setConnectedIds(connections.map(conn => conn.marketplace_id));
+    } catch (error) {
+      console.error('Erro ao carregar marketplaces:', error);
+      toast({
+        variant: "destructive",
+        title: "Erro ao carregar marketplaces",
+        description: "Não foi possível carregar seus marketplaces conectados.",
+      });
+    }
+  };
 
   const handleConnectClick = (marketplace: any) => {
     setCurrentMarketplace(marketplace);
@@ -66,31 +86,57 @@ export function MarketplaceConnector() {
     setIsInfoDialogOpen(true);
   };
 
-  const handleConnect = () => {
-    if (credentials.email && credentials.password) {
-      // Here would be the actual API call to connect the marketplace
-      setConnectedIds(prev => [...prev, currentMarketplace.id]);
+  const handleConnect = async () => {
+    if (!credentials.email || !credentials.password) {
+      toast({
+        variant: "destructive",
+        title: "Erro ao conectar",
+        description: "Por favor, preencha todos os campos.",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      await connectMarketplace(currentMarketplace.id, credentials);
+      await loadConnectedMarketplaces();
       setIsDialogOpen(false);
       setCredentials({ email: "", password: "" });
       toast({
         title: "Marketplace conectado!",
         description: `Sua conta do ${currentMarketplace.name} foi conectada com sucesso.`,
       });
-    } else {
+    } catch (error) {
+      console.error('Erro ao conectar:', error);
       toast({
         variant: "destructive",
         title: "Erro ao conectar",
-        description: "Por favor, preencha todos os campos.",
+        description: "Ocorreu um erro ao tentar conectar sua conta. Tente novamente.",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleDisconnect = (id: number) => {
-    setConnectedIds(prev => prev.filter(marketplaceId => marketplaceId !== id));
-    toast({
-      title: "Marketplace desconectado",
-      description: "Sua conta foi desconectada com sucesso.",
-    });
+  const handleDisconnect = async (id: number) => {
+    setIsLoading(true);
+    try {
+      await disconnectMarketplace(id);
+      await loadConnectedMarketplaces();
+      toast({
+        title: "Marketplace desconectado",
+        description: "Sua conta foi desconectada com sucesso.",
+      });
+    } catch (error) {
+      console.error('Erro ao desconectar:', error);
+      toast({
+        variant: "destructive",
+        title: "Erro ao desconectar",
+        description: "Ocorreu um erro ao tentar desconectar sua conta. Tente novamente.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
