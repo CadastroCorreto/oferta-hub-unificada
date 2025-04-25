@@ -1,14 +1,19 @@
-
 import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { MarketplaceCard } from "@/components/MarketplaceCard";
-import { connectMarketplace, disconnectMarketplace, getConnectedMarketplaces } from "@/services/marketplace";
 import { marketplaces } from "@/data/marketplaces";
 import { MarketplaceInfoDialog } from "@/components/marketplace/MarketplaceInfoDialog";
 import { MarketplaceConnectDialog } from "@/components/marketplace/MarketplaceConnectDialog";
+import { 
+  authenticateMarketplace, 
+  saveMarketplaceIntegration,
+  getMarketplaceIntegrations,
+  disconnectMarketplaceIntegration 
+} from "@/services/marketplace-integration";
+import type { MarketplaceIntegration } from "@/types/marketplace-integration";
 
 export function MarketplaceConnector() {
-  const [connectedIds, setConnectedIds] = useState<number[]>([]);
+  const [integrations, setIntegrations] = useState<MarketplaceIntegration[]>([]);
   const [currentMarketplace, setCurrentMarketplace] = useState<any>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isInfoDialogOpen, setIsInfoDialogOpen] = useState(false);
@@ -17,19 +22,19 @@ export function MarketplaceConnector() {
   const { toast } = useToast();
 
   useEffect(() => {
-    loadConnectedMarketplaces();
+    loadIntegrations();
   }, []);
 
-  const loadConnectedMarketplaces = async () => {
+  const loadIntegrations = async () => {
     try {
-      const connections = await getConnectedMarketplaces();
-      setConnectedIds(connections.map(conn => conn.marketplace_id));
+      const loadedIntegrations = await getMarketplaceIntegrations();
+      setIntegrations(loadedIntegrations);
     } catch (error) {
-      console.error('Erro ao carregar marketplaces:', error);
+      console.error('Erro ao carregar integrações:', error);
       toast({
         variant: "destructive",
         title: "Erro ao carregar marketplaces",
-        description: "Não foi possível carregar seus marketplaces conectados.",
+        description: "Não foi possível carregar suas integrações.",
       });
     }
   };
@@ -60,10 +65,19 @@ export function MarketplaceConnector() {
 
     setIsLoading(true);
     try {
-      await connectMarketplace(currentMarketplace.id, credentials);
-      await loadConnectedMarketplaces();
+      const config = {
+        apiKey: 'sua-chave-api',
+        apiUrl: `https://api.${currentMarketplace.name.toLowerCase()}.com`,
+        marketplace_id: currentMarketplace.id
+      };
+
+      const authResponse = await authenticateMarketplace(credentials, config);
+      await saveMarketplaceIntegration(currentMarketplace.id, authResponse);
+      await loadIntegrations();
+      
       setIsDialogOpen(false);
       setCredentials({ email: "", password: "" });
+      
       toast({
         title: "Marketplace conectado!",
         description: `Sua conta do ${currentMarketplace.name} foi conectada com sucesso.`,
@@ -73,18 +87,18 @@ export function MarketplaceConnector() {
       toast({
         variant: "destructive",
         title: "Erro ao conectar",
-        description: "Ocorreu um erro ao tentar conectar sua conta. Tente novamente.",
+        description: "Ocorreu um erro ao tentar conectar sua conta. Verifique suas credenciais e tente novamente.",
       });
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleDisconnect = async (id: number) => {
+  const handleDisconnect = async (integration: MarketplaceIntegration) => {
     setIsLoading(true);
     try {
-      await disconnectMarketplace(id);
-      await loadConnectedMarketplaces();
+      await disconnectMarketplaceIntegration(integration.id);
+      await loadIntegrations();
       toast({
         title: "Marketplace desconectado",
         description: "Sua conta foi desconectada com sucesso.",
@@ -118,10 +132,10 @@ export function MarketplaceConnector() {
             name={marketplace.name}
             logo={marketplace.logo}
             description={marketplace.description}
-            isConnected={connectedIds.includes(marketplace.id)}
+            isConnected={integrations.some(integration => integration.marketplace_id === marketplace.id)}
             onConnect={() => 
-              connectedIds.includes(marketplace.id) 
-                ? handleDisconnect(marketplace.id) 
+              integrations.some(integration => integration.marketplace_id === marketplace.id) 
+                ? handleDisconnect(integrations.find(integration => integration.marketplace_id === marketplace.id)!) 
                 : handleConnectClick(marketplace)
             }
             onInfo={() => handleInfoClick(marketplace)}
