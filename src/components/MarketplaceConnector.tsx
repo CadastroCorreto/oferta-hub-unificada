@@ -4,6 +4,9 @@ import { MarketplaceCard } from "@/components/MarketplaceCard";
 import { marketplaces } from "@/data/marketplaces";
 import { MarketplaceInfoDialog } from "@/components/marketplace/MarketplaceInfoDialog";
 import { MarketplaceConnectDialog } from "@/components/marketplace/MarketplaceConnectDialog";
+import { MarketplaceSettingsDialog } from "@/components/marketplace/MarketplaceSettingsDialog";
+import { Settings } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { 
   authenticateMarketplace, 
   saveMarketplaceIntegration,
@@ -19,6 +22,7 @@ export function MarketplaceConnector() {
   const [isInfoDialogOpen, setIsInfoDialogOpen] = useState(false);
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -115,14 +119,30 @@ export function MarketplaceConnector() {
     }
   };
 
+  const openSettings = (marketplace: any) => {
+    setCurrentMarketplace(marketplace);
+    setIsSettingsOpen(true);
+  };
+
   return (
     <div className="space-y-6">
-      <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-md mb-6">
-        <h3 className="font-medium text-yellow-800 mb-2">Importante</h3>
-        <p className="text-sm text-yellow-700">
-          Você pode ver ofertas de todos os marketplaces, mesmo sem conectar sua conta.
-          Conectar uma conta permite acompanhar seus pedidos, usar cupons e ter acesso a ofertas personalizadas.
-        </p>
+      <div className="flex items-center justify-between mb-6">
+        <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-md flex-1 mr-4">
+          <h3 className="font-medium text-yellow-800 mb-2">Importante</h3>
+          <p className="text-sm text-yellow-700">
+            Você pode ver ofertas de todos os marketplaces, mesmo sem conectar sua conta.
+            Conectar uma conta permite acompanhar seus pedidos, usar cupons e ter acesso a ofertas personalizadas.
+          </p>
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          className="flex items-center gap-2"
+          onClick={() => openSettings(marketplaces[0])}
+        >
+          <Settings size={16} />
+          Configurar APIs
+        </Button>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -160,6 +180,12 @@ export function MarketplaceConnector() {
           setIsInfoDialogOpen(false);
           handleConnectClick(currentMarketplace);
         }}
+      />
+
+      <MarketplaceSettingsDialog
+        isOpen={isSettingsOpen}
+        onOpenChange={setIsSettingsOpen}
+        marketplace={currentMarketplace}
       />
     </div>
   );
