@@ -4,6 +4,7 @@ export type MarketplaceApiConfig = {
   apiSecret?: string;
   apiUrl: string;
   marketplace_id: number;
+  redirectUri?: string;
 };
 
 export type MarketplaceAuthResponse = {

@@ -41,12 +41,15 @@ export async function authenticateWithCode(
   config: MarketplaceApiConfig
 ): Promise<MarketplaceAuthResponse> {
   try {
-    const redirectUri = window.location.origin + '/callback/mercadolivre';
+    // Usar o redirectUri do config ou obter da URL atual
+    const redirectUri = config.redirectUri || `${window.location.origin}/callback/mercadolivre`;
+    console.log('Usando redirectUri:', redirectUri);
     
     const response = await fetch(`${config.apiUrl}/oauth/token`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': 'application/json',
       },
       body: new URLSearchParams({
         grant_type: 'authorization_code',
@@ -64,6 +67,8 @@ export async function authenticateWithCode(
     }
 
     const authData = await response.json();
+    console.log('Resposta da autenticação:', authData);
+    
     return {
       access_token: authData.access_token,
       refresh_token: authData.refresh_token,

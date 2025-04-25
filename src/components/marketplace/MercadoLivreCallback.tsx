@@ -36,13 +36,19 @@ export function MercadoLivreCallback() {
       }
 
       try {
+        // URL completa para o redirecionamento
+        const redirectUri = window.location.origin + '/callback/mercadolivre';
+        console.log('Redirect URI utilizado:', redirectUri);
+        
         const config = {
           apiUrl: 'https://api.mercadolibre.com',
           apiKey: process.env.VITE_ML_APP_ID || 'SUA_APP_ID',
           apiSecret: process.env.VITE_ML_SECRET_KEY || 'SUA_SECRET_KEY',
           marketplace_id: 1,
+          redirectUri: redirectUri
         };
         
+        console.log('Tentando autenticar com código:', code);
         const authResponse = await authenticateWithCode(code, config);
         console.log('Autenticação bem sucedida:', authResponse);
         
