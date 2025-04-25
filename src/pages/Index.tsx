@@ -1,11 +1,11 @@
 import { SearchBar } from "@/components/SearchBar";
 import { Button } from "@/components/ui/button";
 import { MarketplaceCard } from "@/components/MarketplaceCard";
-import { ProductCard } from "@/components/ProductCard";
 import { Link } from "react-router-dom";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Settings, Code } from 'lucide-react';
+import { FeaturedMercadoLivreProducts } from "@/components/marketplace/FeaturedMercadoLivreProducts";
 
 // Sample marketplaces data
 const featuredMarketplaces = [
@@ -81,7 +81,7 @@ const Index = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       
-      {/* Add Admin Navigation */}
+      {/* Admin Navigation */}
       <div className="container mx-auto px-4 py-4">
         <div className="flex gap-4 items-center">
           <h2 className="text-lg font-semibold">Área Administrativa:</h2>
@@ -135,27 +135,12 @@ const Index = () => {
       <section className="py-12 md:py-16 bg-gray-50">
         <div className="container">
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-2xl md:text-3xl font-bold">Ofertas em Destaque</h2>
+            <h2 className="text-2xl md:text-3xl font-bold">Produtos do Mercado Livre</h2>
             <Link to="/search">
-              <Button variant="outline">Ver mais ofertas</Button>
+              <Button variant="outline">Ver mais produtos</Button>
             </Link>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {trendingProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                id={product.id}
-                title={product.title}
-                image={product.image}
-                price={product.price}
-                originalPrice={product.originalPrice}
-                marketplace={product.marketplace}
-                marketplaceLogo={product.marketplaceLogo}
-                rating={product.rating}
-                hasFreeShipping={product.hasFreeShipping}
-              />
-            ))}
-          </div>
+          <FeaturedMercadoLivreProducts />
         </div>
       </section>
 
