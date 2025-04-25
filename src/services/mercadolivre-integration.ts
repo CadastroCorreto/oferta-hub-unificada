@@ -100,12 +100,14 @@ export async function fetchMercadoLivreUserInfo(accessToken: string) {
 }
 
 // Função auxiliar para iniciar o fluxo de autorização OAuth
-export function getAuthorizationUrl(clientId: string, redirectUri: string): string {
+export function getAuthorizationUrl(clientId: string, redirectUri?: string): string {
+  const finalRedirectUri = redirectUri || `${window.location.origin}/callback/mercadolivre`;
+  
   const authUrl = new URL('https://auth.mercadolivre.com.br/authorization');
   const params = new URLSearchParams({
     response_type: 'code',
     client_id: clientId,
-    redirect_uri: redirectUri,
+    redirect_uri: finalRedirectUri,
   });
   
   authUrl.search = params.toString();

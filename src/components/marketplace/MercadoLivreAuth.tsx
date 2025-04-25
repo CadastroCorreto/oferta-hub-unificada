@@ -49,4 +49,3 @@ export function MercadoLivreAuth({ clientId, redirectUri }: MercadoLivreAuthProp
     </div>
   );
 }
-
