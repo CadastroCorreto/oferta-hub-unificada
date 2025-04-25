@@ -14,6 +14,9 @@ export function MercadoLivreCallback() {
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
+    // Log da URL de origem no início do processamento
+    console.log('URL de origem:', window.location.origin);
+
     const code = searchParams.get('code');
     const error = searchParams.get('error');
 
