@@ -1,4 +1,3 @@
-
 import { supabase } from '@/lib/supabase';
 import type { MarketplaceApiConfig, MarketplaceAuthResponse } from '@/types/marketplace-integration';
 
@@ -152,4 +151,33 @@ export function getAuthorizationUrl(clientId: string, redirectUri?: string): str
   
   console.log('URL de autorização completa:', fullUrl);
   return fullUrl;
+}
+
+export async function testMercadoLivreConnection(config: MarketplaceApiConfig): Promise<boolean> {
+  try {
+    const response = await fetch(`${config.apiUrl}/oauth/token`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': `Basic ${btoa(`${config.apiKey}:${config.apiSecret}`)}`,
+      },
+      body: new URLSearchParams({
+        grant_type: 'client_credentials',
+        client_id: config.apiKey,
+        client_secret: config.apiSecret || '',
+      }),
+    });
+
+    if (!response.ok) {
+      console.error('Falha no teste de conexão:', await response.text());
+      return false;
+    }
+
+    const data = await response.json();
+    console.log('Teste de conexão bem-sucedido. Token recebido:', data.access_token);
+    return true;
+  } catch (error) {
+    console.error('Erro no teste de conexão:', error);
+    return false;
+  }
 }
