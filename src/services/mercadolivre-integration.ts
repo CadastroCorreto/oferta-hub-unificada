@@ -1,4 +1,3 @@
-
 import { supabase } from '@/lib/supabase';
 import type { MarketplaceApiConfig, MarketplaceAuthResponse } from '@/types/marketplace-integration';
 
@@ -41,9 +40,9 @@ export async function authenticateWithCode(
   config: MarketplaceApiConfig
 ): Promise<MarketplaceAuthResponse> {
   try {
-    // Usar o redirectUri do config ou obter da URL atual
+    // Usar o redirectUri do config ou obter da URL atual do site publicado
     const redirectUri = config.redirectUri || `${window.location.origin}/callback/mercadolivre`;
-    console.log('Usando redirectUri:', redirectUri);
+    console.log('URL de callback sendo usada:', redirectUri);
     
     const response = await fetch(`${config.apiUrl}/oauth/token`, {
       method: 'POST',

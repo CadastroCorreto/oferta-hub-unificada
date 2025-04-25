@@ -10,7 +10,7 @@ interface MercadoLivreAuthProps {
 
 export function MercadoLivreAuth({ clientId, redirectUri }: MercadoLivreAuthProps) {
   const handleAuth = () => {
-    // Usar o redirectUri passado ou construir um com base na URL atual
+    // Usar o redirectUri passado ou construir um com base na URL atual do site
     const finalRedirectUri = redirectUri || `${window.location.origin}/callback/mercadolivre`;
     
     // Construir a URL de autorização do Mercado Livre
@@ -23,7 +23,8 @@ export function MercadoLivreAuth({ clientId, redirectUri }: MercadoLivreAuthProp
     
     // Adicionar os parâmetros à URL e redirecionar
     authUrl.search = params.toString();
-    console.log('Redirecionando para:', authUrl.toString());
+    console.log('URL de autenticação:', authUrl.toString());
+    console.log('Redirect URI:', finalRedirectUri);
     window.location.href = authUrl.toString();
   };
 
@@ -48,3 +49,4 @@ export function MercadoLivreAuth({ clientId, redirectUri }: MercadoLivreAuthProp
     </div>
   );
 }
+
