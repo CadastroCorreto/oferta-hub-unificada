@@ -1,7 +1,8 @@
+
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
-import { authenticateMercadoLivre } from '@/services/mercadolivre-integration';
+import { authenticateWithCode } from '@/services/mercadolivre-integration';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, CheckCircle, XCircle } from 'lucide-react';
 
@@ -37,12 +38,12 @@ export function MercadoLivreCallback() {
       try {
         const config = {
           apiUrl: 'https://api.mercadolibre.com',
-          apiKey: 'SUA_APP_ID',
-          apiSecret: 'SUA_SECRET_KEY',
+          apiKey: process.env.VITE_ML_APP_ID || 'SUA_APP_ID',
+          apiSecret: process.env.VITE_ML_SECRET_KEY || 'SUA_SECRET_KEY',
           marketplace_id: 1,
         };
         
-        const authResponse = await authenticateMercadoLivre(config);
+        const authResponse = await authenticateWithCode(code, config);
         console.log('Autenticação bem sucedida:', authResponse);
         
         setStatus('success');
