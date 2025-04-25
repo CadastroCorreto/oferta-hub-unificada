@@ -2,6 +2,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { LogIn } from 'lucide-react';
+import { getAuthorizationUrl } from '@/services/mercadolivre-integration';
 
 interface MercadoLivreAuthProps {
   clientId: string;
@@ -10,22 +11,9 @@ interface MercadoLivreAuthProps {
 
 export function MercadoLivreAuth({ clientId, redirectUri }: MercadoLivreAuthProps) {
   const handleAuth = () => {
-    // Usar o redirectUri passado ou construir um com base na URL atual do site
-    const finalRedirectUri = redirectUri || `${window.location.origin}/callback/mercadolivre`;
-    
-    // Construir a URL de autorização do Mercado Livre
-    const authUrl = new URL('https://auth.mercadolivre.com.br/authorization');
-    const params = new URLSearchParams({
-      response_type: 'code',
-      client_id: clientId,
-      redirect_uri: finalRedirectUri,
-    });
-    
-    // Adicionar os parâmetros à URL e redirecionar
-    authUrl.search = params.toString();
-    console.log('URL de autenticação:', authUrl.toString());
-    console.log('Redirect URI:', finalRedirectUri);
-    window.location.href = authUrl.toString();
+    const authUrl = getAuthorizationUrl(clientId, redirectUri);
+    console.log('URL de autenticação:', authUrl);
+    window.location.href = authUrl;
   };
 
   return (
