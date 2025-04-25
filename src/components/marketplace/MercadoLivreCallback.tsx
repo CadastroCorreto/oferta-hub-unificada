@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
@@ -36,15 +35,13 @@ export function MercadoLivreCallback() {
       }
 
       try {
-        // Aqui você enviaria o código para o seu servidor backend processar
-        // Para teste local, podemos simular uma resposta de sucesso
         const config = {
           apiUrl: 'https://api.mercadolibre.com',
           apiKey: 'SUA_APP_ID',
           apiSecret: 'SUA_SECRET_KEY',
+          marketplace_id: 1,
         };
         
-        // Em um caso real, você usaria o código recebido
         const authResponse = await authenticateMercadoLivre(config);
         console.log('Autenticação bem sucedida:', authResponse);
         
@@ -54,7 +51,6 @@ export function MercadoLivreCallback() {
           description: 'Sua conta do Mercado Livre foi conectada com sucesso.',
         });
 
-        // Espera um pouco antes de redirecionar
         setTimeout(() => {
           navigate('/marketplaces');
         }, 3000);
