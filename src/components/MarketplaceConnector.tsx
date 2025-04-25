@@ -1,53 +1,11 @@
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { MarketplaceCard } from "@/components/MarketplaceCard";
-import { useToast } from "@/components/ui/use-toast";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { ExternalLink } from "lucide-react";
-import { connectMarketplace, disconnectMarketplace, getConnectedMarketplaces } from "@/services/marketplace";
-import type { MarketplaceConnection } from "@/types/marketplace";
 
-// Mock data for marketplaces
-const marketplaces = [
-  {
-    id: 1,
-    name: "MercadoLivre",
-    logo: "https://placehold.co/200?text=ML",
-    description: "Maior marketplace da América Latina com milhões de produtos."
-  },
-  {
-    id: 2,
-    name: "Amazon",
-    logo: "https://placehold.co/200?text=AM",
-    description: "Gigante do e-commerce global com variedade de produtos."
-  },
-  {
-    id: 3,
-    name: "Shopee",
-    logo: "https://placehold.co/200?text=SP",
-    description: "Marketplace com produtos de todo o mundo a preços competitivos."
-  },
-  {
-    id: 4,
-    name: "Magazine Luiza",
-    logo: "https://placehold.co/200?text=ML",
-    description: "Uma das maiores varejistas do Brasil com amplo catálogo."
-  },
-  {
-    id: 5,
-    name: "AliExpress",
-    logo: "https://placehold.co/200?text=AX",
-    description: "Produtos importados da China com preços acessíveis."
-  },
-  {
-    id: 6,
-    name: "Americanas",
-    logo: "https://placehold.co/200?text=AM",
-    description: "Grande variedade de produtos de diferentes categorias."
-  },
-];
+import { useState, useEffect } from "react";
+import { useToast } from "@/components/ui/use-toast";
+import { MarketplaceCard } from "@/components/MarketplaceCard";
+import { connectMarketplace, disconnectMarketplace, getConnectedMarketplaces } from "@/services/marketplace";
+import { marketplaces } from "@/data/marketplaces";
+import { MarketplaceInfoDialog } from "@/components/marketplace/MarketplaceInfoDialog";
+import { MarketplaceConnectDialog } from "@/components/marketplace/MarketplaceConnectDialog";
 
 export function MarketplaceConnector() {
   const [connectedIds, setConnectedIds] = useState<number[]>([]);
@@ -84,6 +42,10 @@ export function MarketplaceConnector() {
   const handleInfoClick = (marketplace: any) => {
     setCurrentMarketplace(marketplace);
     setIsInfoDialogOpen(true);
+  };
+
+  const handleCredentialsChange = (field: "email" | "password", value: string) => {
+    setCredentials(prev => ({ ...prev, [field]: value }));
   };
 
   const handleConnect = async () => {
@@ -167,88 +129,24 @@ export function MarketplaceConnector() {
         ))}
       </div>
 
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Conectar {currentMarketplace?.name}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email ou usuário</Label>
-              <Input
-                id="email"
-                type="text"
-                value={credentials.email}
-                onChange={(e) => setCredentials(prev => ({ ...prev, email: e.target.value }))}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="password">Senha</Label>
-              <Input
-                id="password"
-                type="password"
-                value={credentials.password}
-                onChange={(e) => setCredentials(prev => ({ ...prev, password: e.target.value }))}
-              />
-            </div>
-            <Button className="w-full" onClick={handleConnect}>
-              Conectar conta
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <MarketplaceConnectDialog
+        isOpen={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+        marketplace={currentMarketplace}
+        credentials={credentials}
+        onCredentialsChange={handleCredentialsChange}
+        onConnect={handleConnect}
+      />
 
-      <Dialog open={isInfoDialogOpen} onOpenChange={setIsInfoDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Informações sobre {currentMarketplace?.name}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <p>Mesmo sem conectar sua conta, você ainda pode ver ofertas do {currentMarketplace?.name} em nossa plataforma.</p>
-            
-            <div className="space-y-2">
-              <h4 className="font-medium">Benefícios de conectar:</h4>
-              <ul className="list-disc pl-5 space-y-1 text-sm">
-                <li>Acompanhamento de pedidos</li>
-                <li>Recomendações personalizadas</li>
-                <li>Alertas de preço para produtos do seu interesse</li>
-                <li>Uso de cupons e promoções exclusivas</li>
-              </ul>
-            </div>
-            
-            <div className="flex gap-3 pt-2">
-              <Button
-                variant="outline"
-                className="flex-1"
-                onClick={() => setIsInfoDialogOpen(false)}
-              >
-                Ver ofertas sem conectar
-              </Button>
-              
-              <Button
-                className="flex-1"
-                onClick={() => {
-                  setIsInfoDialogOpen(false);
-                  handleConnectClick(currentMarketplace);
-                }}
-              >
-                Conectar conta
-              </Button>
-            </div>
-            
-            <div className="pt-2 flex justify-center">
-              <a 
-                href={`https://${currentMarketplace?.name.toLowerCase().replace(/\s+/g, '')}.com.br`} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-sm text-primary flex items-center gap-1 hover:underline"
-              >
-                Visitar site oficial <ExternalLink size={14} />
-              </a>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <MarketplaceInfoDialog
+        isOpen={isInfoDialogOpen}
+        onOpenChange={setIsInfoDialogOpen}
+        marketplace={currentMarketplace}
+        onConnectClick={() => {
+          setIsInfoDialogOpen(false);
+          handleConnectClick(currentMarketplace);
+        }}
+      />
     </div>
   );
 }
