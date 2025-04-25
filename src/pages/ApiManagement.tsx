@@ -4,7 +4,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { MarketplaceSettingsDialog } from "@/components/marketplace/MarketplaceSettingsDialog";
-import { Api, Settings } from 'lucide-react';
+import { Code, Settings } from 'lucide-react';
 import { marketplaces } from "@/data/marketplaces";
 
 export default function ApiManagement() {
@@ -14,55 +14,40 @@ export default function ApiManagement() {
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="flex items-center gap-2 mb-6">
-        <Api className="h-6 w-6" />
+        <Code className="h-6 w-6" />
         <h1 className="text-2xl font-bold">Gerenciamento de APIs</h1>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>APIs Configuradas</CardTitle>
+          <CardTitle>Teste de Conexão</CardTitle>
           <CardDescription>
-            Gerencie suas integrações e chaves de API para diferentes marketplaces
+            Configure e teste suas integrações com o Mercado Livre
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Marketplace</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Última Atualização</TableHead>
-                <TableHead className="text-right">Ações</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {marketplaces.map((marketplace) => (
-                <TableRow key={marketplace.id}>
-                  <TableCell className="font-medium">{marketplace.name}</TableCell>
-                  <TableCell>
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                      Pendente
-                    </span>
-                  </TableCell>
-                  <TableCell>-</TableCell>
-                  <TableCell className="text-right">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="inline-flex items-center gap-2"
-                      onClick={() => {
-                        setSelectedMarketplace(marketplace);
-                        setIsSettingsOpen(true);
-                      }}
-                    >
-                      <Settings className="h-4 w-4" />
-                      Configurar
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <div className="space-y-4">
+            {/* Mercado Livre Test Section */}
+            <div className="border p-4 rounded-lg">
+              <h3 className="font-medium mb-2">Mercado Livre</h3>
+              <p className="text-sm text-gray-600 mb-4">
+                Teste a conexão com a API do Mercado Livre para verificar se as credenciais estão corretas.
+              </p>
+              
+              <Button
+                variant="outline"
+                size="sm"
+                className="inline-flex items-center gap-2"
+                onClick={() => {
+                  setSelectedMarketplace(marketplaces[0]);
+                  setIsSettingsOpen(true);
+                }}
+              >
+                <Settings className="h-4 w-4" />
+                Configurar API
+              </Button>
+            </div>
+          </div>
         </CardContent>
       </Card>
 
