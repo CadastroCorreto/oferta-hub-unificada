@@ -1,4 +1,3 @@
-
 import { supabase } from '@/lib/supabase';
 import type { MarketplaceApiConfig, MarketplaceAuthResponse } from '@/types/marketplace-integration';
 
@@ -100,20 +99,19 @@ export async function fetchMercadoLivreUserInfo(accessToken: string) {
   }
 }
 
-// Função auxiliar para iniciar o fluxo de autorização OAuth
 export function getAuthorizationUrl(clientId: string, redirectUri?: string): string {
   const finalRedirectUri = redirectUri || `${window.location.origin}/callback/mercadolivre`;
   
-  // Garantir que a URL está correta
   if (!finalRedirectUri.startsWith('http')) {
     console.error('RedirectURI inválido:', finalRedirectUri);
     throw new Error('URL de redirecionamento inválida');
   }
   
-  console.log('Usando redirect URI:', finalRedirectUri);
-  console.log('Client ID usado:', clientId);
+  console.log('Gerando URL de autorização...');
+  console.log('Client ID:', clientId);
+  console.log('Redirect URI:', finalRedirectUri);
   
-  const authUrl = new URL('https://auth.mercadolivre.com.br/authorization');
+  const authUrl = new URL('https://auth.mercadolibre.com.br/authorization');
   const params = new URLSearchParams({
     response_type: 'code',
     client_id: clientId,
@@ -122,7 +120,7 @@ export function getAuthorizationUrl(clientId: string, redirectUri?: string): str
   
   authUrl.search = params.toString();
   const fullUrl = authUrl.toString();
-  console.log('URL de autorização gerada:', fullUrl);
   
+  console.log('URL de autorização completa:', fullUrl);
   return fullUrl;
 }

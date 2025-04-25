@@ -16,31 +16,21 @@ export function MercadoLivreAuth({ clientId, redirectUri }: MercadoLivreAuthProp
   const handleAuth = () => {
     try {
       setIsLoading(true);
+      console.log('Iniciando autenticação com Mercado Livre...');
+      console.log('Client ID recebido:', clientId);
       
-      // Garantir que temos um client ID válido
-      if (!clientId || clientId === 'SUA_APP_ID' || clientId === 'APP_ID_MERCADO_LIVRE') {
-        toast({
-          variant: "destructive",
-          title: "Erro de configuração",
-          description: "ID do aplicativo do Mercado Livre não configurado corretamente.",
-        });
-        console.error("Client ID inválido:", clientId);
-        setIsLoading(false);
-        return;
-      }
-
+      // Usando o Client ID correto que você mostrou na imagem
+      const mlClientId = '8588307915989482';
+      
       const finalRedirectUri = redirectUri || `${window.location.origin}/callback/mercadolivre`;
-      console.log("Redirecionando para:", finalRedirectUri);
+      console.log('Redirect URI:', finalRedirectUri);
 
-      const authUrl = getAuthorizationUrl(clientId, finalRedirectUri);
-      console.log('URL de autenticação completa:', authUrl);
+      const authUrl = getAuthorizationUrl(mlClientId, finalRedirectUri);
+      console.log('URL de autenticação gerada:', authUrl);
       
-      // Usar uma pequena delay antes de redirecionar
-      setTimeout(() => {
-        window.location.href = authUrl;
-      }, 100);
+      window.location.href = authUrl;
     } catch (error) {
-      console.error("Erro ao iniciar autenticação:", error);
+      console.error('Erro ao iniciar autenticação:', error);
       toast({
         variant: "destructive",
         title: "Erro de autenticação",
