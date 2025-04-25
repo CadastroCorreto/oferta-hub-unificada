@@ -23,8 +23,11 @@ export function MarketplaceSettingsDialog({
   onOpenChange,
   marketplace,
 }: MarketplaceSettingsDialogProps) {
-  const [config, setConfig] = useState<Partial<MarketplaceApiConfig>>({
+  const [config, setConfig] = useState<MarketplaceApiConfig>({
     apiUrl: 'https://api.mercadolibre.com',
+    apiKey: '',
+    marketplace_id: marketplace?.id || 1,
+    apiSecret: '',
   });
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
@@ -65,11 +68,7 @@ export function MarketplaceSettingsDialog({
 
     setIsTestingConnection(true);
     try {
-      const connectionResult = await testMercadoLivreConnection({
-        ...config,
-        marketplace_id: marketplace?.id || 1,
-        apiUrl: config.apiUrl || 'https://api.mercadolibre.com'
-      });
+      const connectionResult = await testMercadoLivreConnection(config);
 
       if (connectionResult) {
         toast({
