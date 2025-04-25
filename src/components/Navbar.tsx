@@ -10,8 +10,8 @@ export function Navbar() {
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-2">
           <Link to="/" className="flex items-center space-x-2">
-            <div className="w-6 h-6 rounded-full bg-gradient-marketplace"></div>
-            <span className="font-bold text-xl">OfertaHub</span>
+            <div className="w-8 h-8 rounded bg-gradient-to-br from-primary via-secondary to-primary-foreground flex items-center justify-center text-white font-bold text-xl">E</div>
+            <span className="font-bold text-xl bg-gradient-to-r from-primary via-secondary to-primary-foreground bg-clip-text text-transparent">Encontrae</span>
           </Link>
         </div>
         <nav className="hidden md:flex items-center gap-6">
