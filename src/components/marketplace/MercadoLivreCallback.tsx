@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
@@ -14,12 +15,15 @@ export function MercadoLivreCallback() {
 
   useEffect(() => {
     console.log('URL de origem:', window.location.origin);
+    console.log('URL completa:', window.location.href);
+    console.log('Parâmetros:', Object.fromEntries(searchParams.entries()));
 
     const code = searchParams.get('code');
     const error = searchParams.get('error');
 
     const processAuth = async () => {
       if (error) {
+        console.error('Erro recebido:', error);
         setStatus('error');
         setErrorMessage('Acesso negado ou autenticação cancelada.');
         toast({
@@ -31,13 +35,18 @@ export function MercadoLivreCallback() {
       }
 
       if (!code) {
+        console.error('Código não encontrado');
         setStatus('error');
         setErrorMessage('Código de autorização não encontrado.');
         return;
       }
 
       try {
-        const redirectUri = window.location.origin + '/callback/mercadolivre';
+        console.log('Código recebido:', code);
+        
+        // Recuperar redirectUri do localStorage ou usar o padrão
+        const savedRedirectUri = localStorage.getItem('ml_redirect_uri');
+        const redirectUri = savedRedirectUri || window.location.origin + '/callback/mercadolivre';
         console.log('Redirect URI utilizado:', redirectUri);
         
         const config = {
@@ -57,6 +66,9 @@ export function MercadoLivreCallback() {
           title: 'Conta conectada!',
           description: 'Sua conta do Mercado Livre foi conectada com sucesso.',
         });
+
+        // Limpar o URI salvo após uso bem-sucedido
+        localStorage.removeItem('ml_redirect_uri');
 
         setTimeout(() => {
           navigate('/marketplaces');

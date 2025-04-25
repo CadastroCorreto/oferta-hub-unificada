@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { LogIn } from 'lucide-react';
@@ -17,12 +18,16 @@ export function MercadoLivreAuth({ clientId, redirectUri }: MercadoLivreAuthProp
       setIsLoading(true);
       console.log('Iniciando autenticação com Mercado Livre...');
       
+      // Usando o Client ID fixo para garantir consistência
       const mlClientId = '8588307915989482';
       const mlRedirectUri = redirectUri || `${window.location.origin}/callback/mercadolivre`;
       
       console.log('Client ID:', mlClientId);
       console.log('Redirect URI:', mlRedirectUri);
 
+      // Salvar o URI de redirecionamento no localStorage para uso posterior
+      localStorage.setItem('ml_redirect_uri', mlRedirectUri);
+      
       const authUrl = getAuthorizationUrl(mlClientId, mlRedirectUri);
       console.log('URL de autenticação gerada:', authUrl);
       
@@ -55,7 +60,7 @@ export function MercadoLivreAuth({ clientId, redirectUri }: MercadoLivreAuthProp
       
       <p className="text-xs text-gray-500 mt-2 text-center max-w-md">
         Você será redirecionado para o site do Mercado Livre para autorizar o acesso.
-        Após a autorização, você retornará automaticamente para o aplicativo.
+        Após a autorização ou criação da conta, você retornará automaticamente para o aplicativo.
       </p>
     </div>
   );

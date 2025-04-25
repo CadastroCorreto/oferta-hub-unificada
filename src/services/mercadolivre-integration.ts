@@ -1,3 +1,4 @@
+
 import { supabase } from '@/lib/supabase';
 import type { MarketplaceApiConfig, MarketplaceAuthResponse } from '@/types/marketplace-integration';
 
@@ -40,8 +41,8 @@ export async function authenticateWithCode(
   config: MarketplaceApiConfig
 ): Promise<MarketplaceAuthResponse> {
   try {
-    // Usar o redirectUri do config ou obter da URL atual do site publicado
-    const redirectUri = config.redirectUri || `${window.location.origin}/callback/mercadolivre`;
+    // Usar o redirectUri do config ou recuperar do localStorage
+    const redirectUri = config.redirectUri || localStorage.getItem('ml_redirect_uri') || `${window.location.origin}/callback/mercadolivre`;
     console.log('URL de callback sendo usada:', redirectUri);
     
     const response = await fetch(`${config.apiUrl}/oauth/token`, {
@@ -67,6 +68,9 @@ export async function authenticateWithCode(
 
     const authData = await response.json();
     console.log('Resposta da autenticação:', authData);
+    
+    // Limpar o URI de redirecionamento do localStorage após o uso
+    localStorage.removeItem('ml_redirect_uri');
     
     return {
       access_token: authData.access_token,
@@ -116,6 +120,8 @@ export function getAuthorizationUrl(clientId: string, redirectUri?: string): str
     response_type: 'code',
     client_id: clientId,
     redirect_uri: finalRedirectUri,
+    // Adicionar o parâmetro registration para permitir a criação de conta e redirecionamento automático
+    registration: 'true'
   });
   
   authUrl.search = params.toString();
