@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -11,6 +10,7 @@ import ProductDetail from "./pages/ProductDetail";
 import NotFound from "./pages/NotFound";
 import { MercadoLivreCallback } from "./components/marketplace/MercadoLivreCallback";
 import SslCertificate from "./pages/SslCertificate";
+import ApiManagement from "./pages/ApiManagement";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +27,7 @@ const App = () => (
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/callback/mercadolivre" element={<MercadoLivreCallback />} />
           <Route path="/ssl-certificate" element={<SslCertificate />} />
+          <Route path="/admin/apis" element={<ApiManagement />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
