@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Info } from "lucide-react";
 
 interface MarketplaceCardProps {
   name: string;
@@ -8,9 +9,17 @@ interface MarketplaceCardProps {
   description: string;
   isConnected?: boolean;
   onConnect?: () => void;
+  onInfo?: () => void;
 }
 
-export function MarketplaceCard({ name, logo, description, isConnected = false, onConnect }: MarketplaceCardProps) {
+export function MarketplaceCard({ 
+  name, 
+  logo, 
+  description, 
+  isConnected = false, 
+  onConnect,
+  onInfo 
+}: MarketplaceCardProps) {
   return (
     <Card className="overflow-hidden transition-all hover:shadow-md">
       <CardHeader className="pb-2">
@@ -34,13 +43,23 @@ export function MarketplaceCard({ name, logo, description, isConnected = false, 
         <CardDescription className="line-clamp-2">{description}</CardDescription>
       </CardContent>
       <CardFooter>
-        <Button 
-          variant={isConnected ? "outline" : "default"} 
-          className="w-full" 
-          onClick={onConnect}
-        >
-          {isConnected ? "Desconectar" : "Conectar"}
-        </Button>
+        <div className="w-full flex gap-2">
+          <Button 
+            variant={isConnected ? "outline" : "default"} 
+            className="flex-1" 
+            onClick={onConnect}
+          >
+            {isConnected ? "Desconectar" : "Conectar"}
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onInfo}
+            title="Mais informações"
+          >
+            <Info size={18} />
+          </Button>
+        </div>
       </CardFooter>
     </Card>
   );

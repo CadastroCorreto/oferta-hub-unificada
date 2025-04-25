@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
@@ -7,6 +8,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { InfoIcon } from "lucide-react";
 
 const Marketplaces = () => {
   return (
@@ -52,6 +55,15 @@ const Marketplaces = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
+                  <Alert className="mb-6">
+                    <InfoIcon className="h-4 w-4" />
+                    <AlertTitle>Como funciona?</AlertTitle>
+                    <AlertDescription>
+                      O Encontrae mostra ofertas de todos os marketplaces disponíveis, mas conectar sua conta permite acompanhar pedidos, 
+                      usar cupons e receber ofertas personalizadas.
+                    </AlertDescription>
+                  </Alert>
+
                   <div className="text-center py-8">
                     <p className="text-muted-foreground mb-4">
                       Você ainda não conectou nenhum marketplace.

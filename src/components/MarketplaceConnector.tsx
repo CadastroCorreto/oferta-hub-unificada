@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { MarketplaceCard } from "@/components/MarketplaceCard";
@@ -5,6 +6,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ExternalLink } from "lucide-react";
 
 // Mock data for marketplaces
 const marketplaces = [
@@ -50,12 +52,18 @@ export function MarketplaceConnector() {
   const [connectedIds, setConnectedIds] = useState<number[]>([]);
   const [currentMarketplace, setCurrentMarketplace] = useState<any>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isInfoDialogOpen, setIsInfoDialogOpen] = useState(false);
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   const { toast } = useToast();
 
   const handleConnectClick = (marketplace: any) => {
     setCurrentMarketplace(marketplace);
     setIsDialogOpen(true);
+  };
+
+  const handleInfoClick = (marketplace: any) => {
+    setCurrentMarketplace(marketplace);
+    setIsInfoDialogOpen(true);
   };
 
   const handleConnect = () => {
@@ -87,6 +95,14 @@ export function MarketplaceConnector() {
 
   return (
     <div className="space-y-6">
+      <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-md mb-6">
+        <h3 className="font-medium text-yellow-800 mb-2">Importante</h3>
+        <p className="text-sm text-yellow-700">
+          Você pode ver ofertas de todos os marketplaces, mesmo sem conectar sua conta.
+          Conectar uma conta permite acompanhar seus pedidos, usar cupons e ter acesso a ofertas personalizadas.
+        </p>
+      </div>
+      
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {marketplaces.map((marketplace) => (
           <MarketplaceCard
@@ -100,6 +116,7 @@ export function MarketplaceConnector() {
                 ? handleDisconnect(marketplace.id) 
                 : handleConnectClick(marketplace)
             }
+            onInfo={() => handleInfoClick(marketplace)}
           />
         ))}
       </div>
@@ -131,6 +148,58 @@ export function MarketplaceConnector() {
             <Button className="w-full" onClick={handleConnect}>
               Conectar conta
             </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isInfoDialogOpen} onOpenChange={setIsInfoDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Informações sobre {currentMarketplace?.name}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <p>Mesmo sem conectar sua conta, você ainda pode ver ofertas do {currentMarketplace?.name} em nossa plataforma.</p>
+            
+            <div className="space-y-2">
+              <h4 className="font-medium">Benefícios de conectar:</h4>
+              <ul className="list-disc pl-5 space-y-1 text-sm">
+                <li>Acompanhamento de pedidos</li>
+                <li>Recomendações personalizadas</li>
+                <li>Alertas de preço para produtos do seu interesse</li>
+                <li>Uso de cupons e promoções exclusivas</li>
+              </ul>
+            </div>
+            
+            <div className="flex gap-3 pt-2">
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => setIsInfoDialogOpen(false)}
+              >
+                Ver ofertas sem conectar
+              </Button>
+              
+              <Button
+                className="flex-1"
+                onClick={() => {
+                  setIsInfoDialogOpen(false);
+                  handleConnectClick(currentMarketplace);
+                }}
+              >
+                Conectar conta
+              </Button>
+            </div>
+            
+            <div className="pt-2 flex justify-center">
+              <a 
+                href={`https://${currentMarketplace?.name.toLowerCase().replace(/\s+/g, '')}.com.br`} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-sm text-primary flex items-center gap-1 hover:underline"
+              >
+                Visitar site oficial <ExternalLink size={14} />
+              </a>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
