@@ -10,7 +10,6 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
     https: {
-      // Usando certificados autoassinados para desenvolvimento local
       key: fs.readFileSync(path.resolve(__dirname, './cert/key.pem')),
       cert: fs.readFileSync(path.resolve(__dirname, './cert/cert.pem')),
     }
