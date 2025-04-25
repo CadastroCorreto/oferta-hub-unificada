@@ -9,10 +9,10 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
-    https: {
+    https: mode === 'development' ? {
       key: fs.readFileSync(path.resolve(__dirname, './cert/key.pem')),
       cert: fs.readFileSync(path.resolve(__dirname, './cert/cert.pem')),
-    }
+    } : undefined
   },
   plugins: [
     react(),
