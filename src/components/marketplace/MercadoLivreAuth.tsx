@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { LogIn } from 'lucide-react';
@@ -17,15 +16,14 @@ export function MercadoLivreAuth({ clientId, redirectUri }: MercadoLivreAuthProp
     try {
       setIsLoading(true);
       console.log('Iniciando autenticação com Mercado Livre...');
-      console.log('Client ID recebido:', clientId);
       
-      // Usando o Client ID correto que você mostrou na imagem
       const mlClientId = '8588307915989482';
+      const mlRedirectUri = redirectUri || `${window.location.origin}/callback/mercadolivre`;
       
-      const finalRedirectUri = redirectUri || `${window.location.origin}/callback/mercadolivre`;
-      console.log('Redirect URI:', finalRedirectUri);
+      console.log('Client ID:', mlClientId);
+      console.log('Redirect URI:', mlRedirectUri);
 
-      const authUrl = getAuthorizationUrl(mlClientId, finalRedirectUri);
+      const authUrl = getAuthorizationUrl(mlClientId, mlRedirectUri);
       console.log('URL de autenticação gerada:', authUrl);
       
       window.location.href = authUrl;

@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
@@ -14,7 +13,6 @@ export function MercadoLivreCallback() {
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
-    // Log da URL de origem no início do processamento
     console.log('URL de origem:', window.location.origin);
 
     const code = searchParams.get('code');
@@ -39,14 +37,13 @@ export function MercadoLivreCallback() {
       }
 
       try {
-        // URL completa para o redirecionamento
         const redirectUri = window.location.origin + '/callback/mercadolivre';
         console.log('Redirect URI utilizado:', redirectUri);
         
         const config = {
           apiUrl: 'https://api.mercadolibre.com',
-          apiKey: process.env.VITE_ML_APP_ID || 'SUA_APP_ID',
-          apiSecret: process.env.VITE_ML_SECRET_KEY || 'SUA_SECRET_KEY',
+          apiKey: '8588307915989482',
+          apiSecret: 'Mq9gEc8JR1f4WX2D5incLGuMQgs2JgTm',
           marketplace_id: 1,
           redirectUri: redirectUri
         };
