@@ -1,9 +1,10 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { MarketplaceCard } from "@/components/MarketplaceCard";
 import { useToast } from "@/components/ui/use-toast";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 // Mock data for marketplaces
 const marketplaces = [
@@ -110,25 +111,19 @@ export function MarketplaceConnector() {
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="grid gap-2">
-              <label htmlFor="email" className="text-sm font-medium">
-                Email ou usuário
-              </label>
-              <input
+              <Label htmlFor="email">Email ou usuário</Label>
+              <Input
                 id="email"
                 type="text"
-                className="border rounded-md p-2"
                 value={credentials.email}
                 onChange={(e) => setCredentials(prev => ({ ...prev, email: e.target.value }))}
               />
             </div>
             <div className="grid gap-2">
-              <label htmlFor="password" className="text-sm font-medium">
-                Senha
-              </label>
-              <input
+              <Label htmlFor="password">Senha</Label>
+              <Input
                 id="password"
                 type="password"
-                className="border rounded-md p-2"
                 value={credentials.password}
                 onChange={(e) => setCredentials(prev => ({ ...prev, password: e.target.value }))}
               />

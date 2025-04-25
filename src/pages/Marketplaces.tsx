@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
@@ -6,6 +5,8 @@ import { MarketplaceConnector } from "@/components/MarketplaceConnector";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const Marketplaces = () => {
   return (
@@ -57,7 +58,8 @@ const Marketplaces = () => {
                     </p>
                     <Button
                       onClick={() => {
-                        document.querySelector('[data-value="connect"]')?.click();
+                        const connectTab = document.querySelector('[data-value="connect"]') as HTMLButtonElement;
+                        if (connectTab) connectTab.click();
                       }}
                     >
                       Conectar agora
