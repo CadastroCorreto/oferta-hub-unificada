@@ -36,6 +36,46 @@ export async function authenticateMercadoLivre(
   }
 }
 
+export async function authenticateWithCode(
+  code: string,
+  config: MarketplaceApiConfig
+): Promise<MarketplaceAuthResponse> {
+  try {
+    const redirectUri = window.location.origin + '/callback/mercadolivre';
+    
+    const response = await fetch(`${config.apiUrl}/oauth/token`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: new URLSearchParams({
+        grant_type: 'authorization_code',
+        client_id: config.apiKey,
+        client_secret: config.apiSecret,
+        code: code,
+        redirect_uri: redirectUri
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Erro na resposta do ML:', errorData);
+      throw new Error(`Falha na autenticação com o Mercado Livre: ${errorData.message || response.statusText}`);
+    }
+
+    const authData = await response.json();
+    return {
+      access_token: authData.access_token,
+      refresh_token: authData.refresh_token,
+      expires_in: authData.expires_in,
+      token_type: authData.token_type,
+    };
+  } catch (error) {
+    console.error('Erro na autenticação do Mercado Livre com código:', error);
+    throw error;
+  }
+}
+
 export async function fetchMercadoLivreUserInfo(accessToken: string) {
   try {
     const response = await fetch('https://api.mercadolibre.com/users/me', {

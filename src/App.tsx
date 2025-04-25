@@ -9,6 +9,7 @@ import Search from "./pages/Search";
 import Marketplaces from "./pages/Marketplaces";
 import ProductDetail from "./pages/ProductDetail";
 import NotFound from "./pages/NotFound";
+import { MercadoLivreCallback } from "./components/marketplace/MercadoLivreCallback";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ const App = () => (
           <Route path="/search" element={<Search />} />
           <Route path="/marketplaces" element={<Marketplaces />} />
           <Route path="/product/:id" element={<ProductDetail />} />
+          <Route path="/callback/mercadolivre" element={<MercadoLivreCallback />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
