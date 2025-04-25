@@ -1,3 +1,4 @@
+
 import { supabase } from '@/lib/supabase';
 import type { MarketplaceApiConfig, MarketplaceAuthResponse } from '@/types/marketplace-integration';
 
@@ -103,6 +104,15 @@ export async function fetchMercadoLivreUserInfo(accessToken: string) {
 export function getAuthorizationUrl(clientId: string, redirectUri?: string): string {
   const finalRedirectUri = redirectUri || `${window.location.origin}/callback/mercadolivre`;
   
+  // Garantir que a URL está correta
+  if (!finalRedirectUri.startsWith('http')) {
+    console.error('RedirectURI inválido:', finalRedirectUri);
+    throw new Error('URL de redirecionamento inválida');
+  }
+  
+  console.log('Usando redirect URI:', finalRedirectUri);
+  console.log('Client ID usado:', clientId);
+  
   const authUrl = new URL('https://auth.mercadolivre.com.br/authorization');
   const params = new URLSearchParams({
     response_type: 'code',
@@ -111,5 +121,8 @@ export function getAuthorizationUrl(clientId: string, redirectUri?: string): str
   });
   
   authUrl.search = params.toString();
-  return authUrl.toString();
+  const fullUrl = authUrl.toString();
+  console.log('URL de autorização gerada:', fullUrl);
+  
+  return fullUrl;
 }

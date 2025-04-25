@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { MarketplaceCard } from "@/components/MarketplaceCard";
@@ -49,7 +48,6 @@ export function MarketplaceConnector() {
   const handleConnectClick = (marketplace: any) => {
     setCurrentMarketplace(marketplace);
     
-    // Se for Mercado Livre, usamos o fluxo OAuth
     if (marketplace.id === 1) {
       setIsMercadoLivreAuthOpen(true);
     } else {
@@ -203,7 +201,8 @@ export function MarketplaceConnector() {
             <h2 className="text-xl font-bold mb-4">Conectar ao Mercado Livre</h2>
             
             <MercadoLivreAuth 
-              clientId={process.env.VITE_ML_APP_ID || "APP_ID_MERCADO_LIVRE"} 
+              clientId={import.meta.env.VITE_ML_APP_ID || "APP_ID_MERCADO_LIVRE"} 
+              redirectUri={`${window.location.origin}/callback/mercadolivre`}
             />
             
             <div className="mt-4 text-right">
