@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { MarketplaceCard } from "@/components/MarketplaceCard";
@@ -7,6 +8,7 @@ import { MarketplaceConnectDialog } from "@/components/marketplace/MarketplaceCo
 import { MarketplaceSettingsDialog } from "@/components/marketplace/MarketplaceSettingsDialog";
 import { Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { MercadoLivreAuth } from "@/components/marketplace/MercadoLivreAuth";
 import { 
   authenticateMarketplace, 
   saveMarketplaceIntegration,
@@ -23,6 +25,7 @@ export function MarketplaceConnector() {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isMercadoLivreAuthOpen, setIsMercadoLivreAuthOpen] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -45,7 +48,13 @@ export function MarketplaceConnector() {
 
   const handleConnectClick = (marketplace: any) => {
     setCurrentMarketplace(marketplace);
-    setIsDialogOpen(true);
+    
+    // Se for Mercado Livre, usamos o fluxo OAuth
+    if (marketplace.id === 1) {
+      setIsMercadoLivreAuthOpen(true);
+    } else {
+      setIsDialogOpen(true);
+    }
   };
 
   const handleInfoClick = (marketplace: any) => {
@@ -187,6 +196,27 @@ export function MarketplaceConnector() {
         onOpenChange={setIsSettingsOpen}
         marketplace={currentMarketplace}
       />
+      
+      {isMercadoLivreAuthOpen && currentMarketplace?.id === 1 && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg max-w-md w-full">
+            <h2 className="text-xl font-bold mb-4">Conectar ao Mercado Livre</h2>
+            
+            <MercadoLivreAuth 
+              clientId={process.env.VITE_ML_APP_ID || "APP_ID_MERCADO_LIVRE"} 
+            />
+            
+            <div className="mt-4 text-right">
+              <Button 
+                variant="outline" 
+                onClick={() => setIsMercadoLivreAuthOpen(false)}
+              >
+                Cancelar
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

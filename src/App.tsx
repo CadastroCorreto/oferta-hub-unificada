@@ -10,6 +10,7 @@ import Marketplaces from "./pages/Marketplaces";
 import ProductDetail from "./pages/ProductDetail";
 import NotFound from "./pages/NotFound";
 import { MercadoLivreCallback } from "./components/marketplace/MercadoLivreCallback";
+import SslCertificate from "./pages/SslCertificate";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/marketplaces" element={<Marketplaces />} />
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/callback/mercadolivre" element={<MercadoLivreCallback />} />
+          <Route path="/ssl-certificate" element={<SslCertificate />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
