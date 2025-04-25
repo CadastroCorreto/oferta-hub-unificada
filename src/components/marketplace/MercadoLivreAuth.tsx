@@ -18,12 +18,18 @@ export function MercadoLivreAuth({ clientId, redirectUri }: MercadoLivreAuthProp
       setIsLoading(true);
       console.log('Iniciando autenticação com Mercado Livre...');
       
-      // Usando o Client ID fixo para garantir consistência
+      // Usar este Client ID que está cadastrado na app do Mercado Livre
       const mlClientId = '8588307915989482';
+      
+      // Preparar corretamente o redirect URI - a URL completa é importante e deve estar registrada no app do ML
       const mlRedirectUri = redirectUri || `${window.location.origin}/callback/mercadolivre`;
       
       console.log('Client ID:', mlClientId);
       console.log('Redirect URI:', mlRedirectUri);
+      
+      // Garantir que o redirectUri está corretamente formatado
+      const encodedRedirectUri = encodeURIComponent(mlRedirectUri);
+      console.log('Redirect URI (encoded):', encodedRedirectUri);
 
       // Salvar o URI de redirecionamento no localStorage para uso posterior
       localStorage.setItem('ml_redirect_uri', mlRedirectUri);

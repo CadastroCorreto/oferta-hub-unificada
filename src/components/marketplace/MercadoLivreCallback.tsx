@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { authenticateWithCode } from '@/services/mercadolivre-integration';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, CheckCircle, XCircle } from 'lucide-react';
@@ -14,18 +14,21 @@ export function MercadoLivreCallback() {
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
+    console.log('====== INICIANDO CALLBACK DO MERCADO LIVRE ======');
     console.log('URL de origem:', window.location.origin);
     console.log('URL completa:', window.location.href);
     console.log('Parâmetros:', Object.fromEntries(searchParams.entries()));
 
     const code = searchParams.get('code');
     const error = searchParams.get('error');
+    const errorDescription = searchParams.get('error_description');
 
     const processAuth = async () => {
       if (error) {
         console.error('Erro recebido:', error);
+        console.error('Descrição do erro:', errorDescription);
         setStatus('error');
-        setErrorMessage('Acesso negado ou autenticação cancelada.');
+        setErrorMessage(errorDescription || 'Acesso negado ou autenticação cancelada.');
         toast({
           variant: 'destructive',
           title: 'Erro de autenticação',
@@ -46,7 +49,7 @@ export function MercadoLivreCallback() {
         
         // Recuperar redirectUri do localStorage ou usar o padrão
         const savedRedirectUri = localStorage.getItem('ml_redirect_uri');
-        const redirectUri = savedRedirectUri || window.location.origin + '/callback/mercadolivre';
+        const redirectUri = savedRedirectUri || `${window.location.origin}/callback/mercadolivre`;
         console.log('Redirect URI utilizado:', redirectUri);
         
         const config = {
@@ -76,7 +79,7 @@ export function MercadoLivreCallback() {
       } catch (error) {
         console.error('Erro na autenticação:', error);
         setStatus('error');
-        setErrorMessage('Ocorreu um erro ao processar a autenticação.');
+        setErrorMessage(error instanceof Error ? error.message : 'Ocorreu um erro ao processar a autenticação.');
         toast({
           variant: 'destructive',
           title: 'Erro de autenticação',

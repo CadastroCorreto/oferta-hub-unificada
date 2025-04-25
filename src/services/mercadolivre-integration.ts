@@ -45,6 +45,18 @@ export async function authenticateWithCode(
     const redirectUri = config.redirectUri || localStorage.getItem('ml_redirect_uri') || `${window.location.origin}/callback/mercadolivre`;
     console.log('URL de callback sendo usada:', redirectUri);
     
+    // Verificar se o redirectUri é válido
+    if (!redirectUri.startsWith('http')) {
+      throw new Error('URI de redirecionamento inválido: ' + redirectUri);
+    }
+    
+    console.log('Realizando autenticação com código:', code);
+    console.log('Configuração:', {
+      apiKey: config.apiKey,
+      apiSecret: config.apiSecret ? '*****' : 'Não definido', // Não logar a chave secreta inteira
+      redirectUri: redirectUri
+    });
+    
     const response = await fetch(`${config.apiUrl}/oauth/token`, {
       method: 'POST',
       headers: {
@@ -54,19 +66,28 @@ export async function authenticateWithCode(
       body: new URLSearchParams({
         grant_type: 'authorization_code',
         client_id: config.apiKey,
-        client_secret: config.apiSecret,
+        client_secret: config.apiSecret || '',
         code: code,
         redirect_uri: redirectUri
       }),
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Erro na resposta do ML:', errorData);
-      throw new Error(`Falha na autenticação com o Mercado Livre: ${errorData.message || response.statusText}`);
+    const responseText = await response.text();
+    console.log('Resposta bruta:', responseText);
+    
+    let authData;
+    try {
+      authData = JSON.parse(responseText);
+    } catch (e) {
+      console.error('Erro ao parsear resposta JSON:', e);
+      throw new Error('Resposta inválida do servidor');
     }
 
-    const authData = await response.json();
+    if (!response.ok) {
+      console.error('Erro na resposta do ML:', authData);
+      throw new Error(`Falha na autenticação com o Mercado Livre: ${authData.message || response.statusText}`);
+    }
+
     console.log('Resposta da autenticação:', authData);
     
     // Limpar o URI de redirecionamento do localStorage após o uso
@@ -115,6 +136,7 @@ export function getAuthorizationUrl(clientId: string, redirectUri?: string): str
   console.log('Client ID:', clientId);
   console.log('Redirect URI:', finalRedirectUri);
   
+  // Construir a URL de autenticação corretamente
   const authUrl = new URL('https://auth.mercadolibre.com.br/authorization');
   const params = new URLSearchParams({
     response_type: 'code',
