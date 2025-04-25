@@ -1,0 +1,56 @@
+
+import { supabase } from '@/lib/supabase';
+import type { MarketplaceApiConfig, MarketplaceAuthResponse } from '@/types/marketplace-integration';
+
+export async function authenticateMercadoLivre(
+  config: MarketplaceApiConfig
+): Promise<MarketplaceAuthResponse> {
+  try {
+    // Implementação do fluxo de autorização do Mercado Livre
+    const response = await fetch(`${config.apiUrl}/oauth/token`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': `Basic ${btoa(`${config.apiKey}:${config.apiSecret}`)}`,
+      },
+      body: new URLSearchParams({
+        grant_type: 'client_credentials',
+        client_id: config.apiKey,
+        client_secret: config.apiSecret,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Falha na autenticação com o Mercado Livre');
+    }
+
+    const authData = await response.json();
+    return {
+      access_token: authData.access_token,
+      expires_in: authData.expires_in,
+      token_type: authData.token_type,
+    };
+  } catch (error) {
+    console.error('Erro na autenticação do Mercado Livre:', error);
+    throw error;
+  }
+}
+
+export async function fetchMercadoLivreUserInfo(accessToken: string) {
+  try {
+    const response = await fetch('https://api.mercadolibre.com/users/me', {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Falha ao buscar informações do usuário');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Erro ao buscar informações do usuário:', error);
+    throw error;
+  }
+}
