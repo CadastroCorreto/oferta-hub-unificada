@@ -26,15 +26,33 @@ export function MercadoLivreAuth({ clientId, redirectUri }: MercadoLivreAuthProp
       
       console.log('Client ID:', mlClientId);
       console.log('Redirect URI:', mlRedirectUri);
+      console.log('Origin:', window.location.origin);
       
       // Save the URI for later use during callback
       localStorage.setItem('ml_redirect_uri', mlRedirectUri);
       
-      const authUrl = getAuthorizationUrl(mlClientId, mlRedirectUri);
-      console.log('URL de autenticação gerada:', authUrl);
+      // Create a test link first to verify if we can connect
+      const testUrl = 'https://www.mercadolivre.com.br';
       
-      // Redirect to auth URL
-      window.location.href = authUrl;
+      // Try to fetch the test URL first to check connectivity
+      fetch(testUrl, { mode: 'no-cors' })
+        .then(() => {
+          console.log('Conexão com Mercado Livre OK, prosseguindo com autenticação');
+          const authUrl = getAuthorizationUrl(mlClientId, mlRedirectUri);
+          console.log('URL de autenticação gerada:', authUrl);
+          
+          // Redirect to auth URL
+          window.location.href = authUrl;
+        })
+        .catch((error) => {
+          console.error('Erro de conectividade com Mercado Livre:', error);
+          toast({
+            variant: "destructive",
+            title: "Erro de conectividade",
+            description: "Não foi possível conectar ao Mercado Livre. Verifique sua conexão e tente novamente.",
+          });
+          setIsLoading(false);
+        });
     } catch (error) {
       console.error('Erro ao iniciar autenticação:', error);
       toast({
@@ -65,6 +83,15 @@ export function MercadoLivreAuth({ clientId, redirectUri }: MercadoLivreAuthProp
         Você será redirecionado para o site do Mercado Livre para autorizar o acesso.
         Após a autorização ou criação da conta, você retornará automaticamente para o aplicativo.
       </p>
+      
+      <div className="mt-4 text-xs text-gray-400">
+        <p>Se você encontrar problemas de conexão, tente:</p>
+        <ul className="list-disc pl-5 mt-1">
+          <li>Verificar se você tem cookies de terceiros habilitados</li>
+          <li>Usar um navegador diferente</li>
+          <li>Desativar extensões de bloqueio</li>
+        </ul>
+      </div>
     </div>
   );
 }

@@ -136,14 +136,15 @@ export function getAuthorizationUrl(clientId: string, redirectUri?: string): str
   console.log('Client ID:', clientId);
   console.log('Redirect URI:', finalRedirectUri);
   
-  // Construir a URL de autenticação corretamente
-  const authUrl = new URL('https://auth.mercadolibre.com.br/authorization');
+  // Usando o domínio principal do Mercado Livre ao invés do subdomínio auth
+  // Isso pode resolver problemas de DNS em alguns casos
+  const authUrl = new URL('https://www.mercadolibre.com/jms/mlb/lgz/login');
   const params = new URLSearchParams({
+    platform_id: 'ml',
+    go: '/authorization',
     response_type: 'code',
     client_id: clientId,
-    redirect_uri: finalRedirectUri,
-    // Adicionar o parâmetro registration para permitir a criação de conta e redirecionamento automático
-    registration: 'true'
+    redirect_uri: finalRedirectUri
   });
   
   authUrl.search = params.toString();
